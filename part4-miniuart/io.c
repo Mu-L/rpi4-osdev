@@ -160,6 +160,6 @@ void uart_update() {
 
     if (uart_isReadByteReady()) {
        unsigned char ch = uart_readByte();
-       if (ch == '\r') uart_writeText("\n"); else uart_writeByteBlocking(ch);
+       uart_writeByteBlocking(ch);
     }
 }

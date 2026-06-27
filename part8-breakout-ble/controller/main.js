@@ -1,12 +1,10 @@
-var bleno = require('bleno-mac');
+import bleno from 'bleno-mac';
+import EchoCharacteristic from './characteristic.js';
 
 var BlenoPrimaryService = bleno.PrimaryService;
+const e = new EchoCharacteristic();
 
-var EchoCharacteristic = require('./characteristic');
-
-console.log('bleno - echo');
-
-var e = new EchoCharacteristic();
+console.log('bleno - mouse echo server starting');
 
 bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
@@ -25,29 +23,8 @@ bleno.on('advertisingStart', function(error) {
     bleno.setServices([
       new BlenoPrimaryService({
         uuid: 'ec00',
-        characteristics: [
-           e
-        ]
+        characteristics: [e]
       })
     ]);
   }
 });
-
-var ioHook = require('iohook');
-
-var buf = Buffer.allocUnsafe(1);
-var obuf = Buffer.allocUnsafe(1);
-const scrwidth = 1440;
-const divisor = scrwidth / 100;
-
-ioHook.on( 'mousemove', event => {
-   buf.writeUInt8(Math.round(event.x / divisor), 0);
-
-   if (Buffer.compare(buf, obuf)) {
-      e._value = buf;
-      if (e._updateValueCallback) e._updateValueCallback(e._value);
-      buf.copy(obuf);
-   }
-});
-
-ioHook.start();

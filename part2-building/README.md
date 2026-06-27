@@ -73,7 +73,7 @@ Safely unmount the SD card from your dev machine, put it back into your RPi4 and
 
 _You've just booted your very own OS!_
 
-As exciting as that sounds, all you're likely to see after the RPi4's own "rainbow splash screen" is an empty, black screen. However, we shouldn't be so surprised: we haven't yet asked it to do anything other than spin in an infinite loop.
+As exciting as that sounds, all you're likely to see is the RPi4's own "rainbow splash screen". However, we shouldn't be so surprised: we haven't yet asked it to do anything other than spin in an infinite loop.
 
 The foundations are laid though, and we can start to do exciting things now. **Congratulations for getting this far!**
 

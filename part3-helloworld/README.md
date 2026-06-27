@@ -6,7 +6,7 @@ Writing a "bare metal" operating system for Raspberry Pi 4 (Part 3)
 Making something happen
 -----------------------
 
-So far our OS produces only a black screen. How can we be sure that our code is actually running? Let's do something a bit more interesting to really demonstrate that we have control of the hardware.
+So far our OS doesn't do a lot. So, how can we be sure that our code is actually running? Let's do something more to really demonstrate that we have control of the hardware.
 
 Usually, the first thing a software developer learns is to print "Hello world!" to the screen. In bare metal development however, printing to the screen can be quite a big challenge, so we're going to do something simpler to start with.
 

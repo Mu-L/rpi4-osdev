@@ -15,11 +15,14 @@ Let's first build the controller code for broadcasting from the laptop. We essen
 
 We don't need to build everything from scratch since we're not on bare metal any more! I used the [Bleno library](https://github.com/noble/bleno), which is extremely popular for this kind of work. It requires some [Node.js](https://nodejs.org/en/download/) knowledge, but I didn't have any before I started and so I'm sure you'll be fine too.
 
-Once you've got Node.js installed, use `npm` to install Bleno with `npm install bleno`. Because I'm on a Mac and running a recent version of Mac OS X (> Catalina), I needed to do this using [these three steps](https://punchthrough.com/how-to-use-node-js-to-speed-up-ble-app-development/) instead:
+Once you've got Node.js installed, use `npm` to install Bleno with `npm install bleno`. Because I'm on a Mac and running a recent version of Mac OS X (> Catalina), I needed to do this using [these steps](https://punchthrough.com/how-to-use-node-js-to-speed-up-ble-app-development/) instead:
 
+ * Ensure the Xcode Command Line Tools are installed using `sudo xcode-select --install`
  * `npm install github:notjosh/bleno#inject-bindings`
  * `npm install github:notjosh/bleno-mac`
  * `npm install github:sandeepmistry/node-xpc-connection#pull/26/head`
+
+For ease, I have included a _package.json_ file in the _controller_ subdirectory, so you should just be able to type `npm install`. 
 
 I used the [echo example](https://github.com/noble/bleno/tree/master/examples/echo) in the Bleno repository as my base code. This example implements a Bluetooth peripheral, exposing a service which:
 
@@ -30,30 +33,11 @@ I used the [echo example](https://github.com/noble/bleno/tree/master/examples/ec
 
 You won't be surprised to know that my design is for our Raspberry Pi to subscribe to receive updates from this service running on my laptop. That locally stored byte value will be updated locally to reflect the current mouse cursor position as it changes. Our Raspberry Pi will then be notified every time I move the mouse on my MacBook Pro as if by magic!
 
-You can see the changes I made to the Bleno echo example to implement this in the _controller_ subdirectory of this part8-breakout-ble. They boil down to making use of [iohook](https://github.com/wilix-team/iohook), which I installed using `npm install iohook`. Here's the interesting bit (the rest is just plumbing):
+Please note that I've been running this code using Node v24.13.1. Please also note that you may need to enable Accessibility for your Terminal or VS Code etc. in the Privacy/Security settings for your Mac to allow this script to access your mouse movements.
 
-```c
-var ioHook = require('iohook');
+You can see the changes I made to the Bleno echo example to implement this in the _controller_ subdirectory of this part8-breakout-ble. They boil down to making use of the more modern [uiohook-napi](https://github.com/SnosMe/uiohook-napi), which I installed using `npm install uiohook-napi`.
 
-var buf = Buffer.allocUnsafe(1);
-var obuf = Buffer.allocUnsafe(1);
-const scrwidth = 1440;
-const divisor = scrwidth / 100;
-
-ioHook.on( 'mousemove', event => {
-   buf.writeUInt8(Math.round(event.x / divisor), 0);
-
-   if (Buffer.compare(buf, obuf)) {
-      e._value = buf;
-      if (e._updateValueCallback) e._updateValueCallback(e._value);
-      buf.copy(obuf);
-   }
-});
-
-ioHook.start();
-```
-
-Here, I'm capturing the x coordinate of the mouse cursor and translating it into a number between 0 (far left of the screen) and 100 (far right of the screen). If it changes from the previous value we saw, we update the callback value (our Raspberry Pi only needs to know when the position has changed). As the callback value is updated, so any subscribed devices will be notified.
+I'm then just capturing the x coordinate of the mouse cursor and translating it into a number between 0 (far left of the screen) and 100 (far right of the screen). If it changes from the previous value we saw, we update the callback value (our Raspberry Pi only needs to know when the position has changed). As the callback value is updated, so any subscribed devices will be notified.
 
 And we have ourselves a working, albeit a bit hacky, Bluetooth game controller! You can run it with the command `node main.js`, but it won't do much without something to connect to it.
 
