@@ -1,5 +1,6 @@
 SECTIONS
 {
+    . = 0x80000;     /* Kernel load address for AArch64 */
     .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
     .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
     PROVIDE(_data = .);
@@ -10,7 +11,6 @@ SECTIONS
         *(.bss .bss.*)
         *(COMMON)
         __bss_end = .;
-        __bss_size = (__bss_end - __bss_start)>>3;
     }
     .cpu1Stack :
     {
@@ -33,3 +33,4 @@ SECTIONS
 
    /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
+__bss_size = (__bss_end - __bss_start)>>3;
