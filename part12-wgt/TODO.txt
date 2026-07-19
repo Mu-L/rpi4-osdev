@@ -1,0 +1,1 @@
+NOTE: need to update controller code here to test wgt15.c onwards. The lower samples have been tested.

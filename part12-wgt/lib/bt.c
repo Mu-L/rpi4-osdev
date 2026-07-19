@@ -235,7 +235,7 @@ void sendACLsubscribe(unsigned int handle)
 #ifdef IOS_CONTROL
     volatile unsigned char command[5] = { 0x12, 0x3d, 0x00, 0x01, 0x00 };
 #else
-    volatile unsigned char command[5] = { 0x12, 0x2b, 0x00, 0x01, 0x00 };
+    volatile unsigned char command[5] = { 0x12, 0x1d, 0x00, 0x01, 0x00 };
 #endif
 
     unsigned int c=0;
